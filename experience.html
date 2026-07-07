@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Wrap Experience — Valley Robot Wraps</title>
+  <meta name="description" content="Scroll through the transformation: watch a bare humanoid robot receive a full Valley Robot Wraps brand wrap in interactive 3D.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+  <link rel="stylesheet" href="css/experience.css">
+</head>
+<body>
+
+  <!-- Fixed 3D stage -->
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- Top bar -->
+  <header class="xp-header">
+    <a class="xp-logo" href="index.html">Valley <em>Robot</em> Wraps</a>
+    <a class="xp-back" href="index.html#quote">Get a Quote →</a>
+  </header>
+
+  <!-- Scroll progress -->
+  <div class="progress" aria-hidden="true"><div class="progress-fill" id="progress-fill"></div></div>
+
+  <!-- Scroll chapters -->
+  <main id="chapters">
+
+    <section class="chapter" id="ch-intro" data-align="center">
+      <div class="chapter-copy">
+        <p class="kicker">The Wrap Experience</p>
+        <h1>One robot.<br>One scroll.<br><span class="grad">Full transformation.</span></h1>
+        <p class="sub">This is UNIT-042 — a factory-fresh humanoid, straight off the truck. Scroll to watch it become a walking piece of your brand.</p>
+        <div class="scroll-cue"><span></span>Scroll</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="ch-scan" data-align="left">
+      <div class="chapter-copy">
+        <p class="kicker">Step 01 · Scan</p>
+        <h2>Every panel, mapped.</h2>
+        <p class="sub">We 3D-scan the chassis — 214 surfaces, every joint and vent flagged as a no-wrap zone. The template fits before the vinyl ever meets the robot.</p>
+      </div>
+    </section>
+
+    <section class="chapter" id="ch-torso" data-align="right">
+      <div class="chapter-copy">
+        <p class="kicker">Step 02 · Wrap</p>
+        <h2>The brand goes on.</h2>
+        <p class="sub">Cast vinyl, rated for actuator heat and a million elbow cycles, laid panel by panel. Torso first — your colors, dead center, eye level.</p>
+      </div>
+    </section>
+
+    <section class="chapter" id="ch-badge" data-align="left">
+      <div class="chapter-copy">
+        <p class="kicker">Step 03 · Identify</p>
+        <h2>A name. A job. A face people trust.</h2>
+        <p class="sub">Chest badge, unit ID, and role stripe — “LOGISTICS · UNIT-042.” Humans don't sidestep a robot they can read.</p>
+      </div>
+    </section>
+
+    <section class="chapter" id="ch-hivis" data-align="right">
+      <div class="chapter-copy">
+        <p class="kicker">Step 04 · Protect</p>
+        <h2>Seen on every shift.</h2>
+        <p class="sub">Hi-vis accents and reflective striping light up forearms and shins — unmistakable on the dock at 2 a.m., invisible to no one.</p>
+      </div>
+    </section>
+
+    <section class="chapter tall" id="ch-final" data-align="center">
+      <div class="chapter-copy">
+        <p class="kicker">Fleet Ready</p>
+        <h2>UNIT-042, reporting <span class="grad">on-brand.</span></h2>
+        <p class="sub">48 hours per unit. 3-year warranty. Multiply by your whole fleet.</p>
+        <div class="cta-row">
+          <a class="btn btn-accent" href="index.html#quote">Wrap My Fleet</a>
+          <a class="btn btn-ghost" href="index.html">Back to Site</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="importmap">
+    { "imports": { "three": "./js/vendor/three.module.min.js" } }
+  </script>
+  <script src="js/vendor/gsap.min.js"></script>
+  <script src="js/vendor/ScrollTrigger.min.js"></script>
+  <script type="module" src="js/experience.js"></script>
+</body>
+</html>

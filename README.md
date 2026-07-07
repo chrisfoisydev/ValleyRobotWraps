@@ -22,14 +22,37 @@ Unitree, 1X NEO).
 - **Testimonials & FAQ**
 - **Quote form** — client-side demo handler (no backend wired up)
 
+## The Wrap Experience (`experience.html`)
+
+A scroll-driven 3D scene built with **three.js** and **GSAP ScrollTrigger**
+(inspired by scrollytelling robot sites like bandinopla's Unitree demo). A
+procedurally built humanoid — UNIT-042 — stands on a fixed WebGL stage while
+six scroll chapters drive the story:
+
+1. **Intro** — bare, factory-fresh robot
+2. **Scan** — a cyan scan ring sweeps the chassis
+3. **Wrap** — brand vinyl applies panel by panel (torso → chest → arms → thighs)
+4. **Identify** — chest badge, `UNIT-042` nametag, and `LOGISTICS` role stripe fade in
+5. **Protect** — lights drop to night-shift and the hi-vis bands glow
+6. **Fleet Ready** — full turn, a wave, and the CTA
+
+The camera rig, robot pose, materials, and lighting are all tweened on one
+scrubbed ScrollTrigger timeline; copy panels fade with their own triggers.
+Honors `prefers-reduced-motion`, falls back gracefully without WebGL.
+
 ## Tech
 
-Fully static site — no build step, no dependencies.
+Fully static site — no build step, no runtime CDN dependencies
+(three.js and GSAP are vendored into `js/vendor/`).
 
 ```
-index.html      # single-page site
-css/style.css   # all styles (responsive, reduced-motion aware)
-js/main.js      # mobile nav, scroll-reveal, quote form handler
+index.html                     # single-page marketing site
+experience.html                # scroll-driven 3D wrap experience
+css/style.css                  # marketing site styles
+css/experience.css             # experience styles (dark, full-screen stage)
+js/main.js                     # mobile nav, scroll-reveal, quote form handler
+js/experience.js               # three.js scene + GSAP scroll timeline
+js/vendor/                     # three.module.min.js, gsap.min.js, ScrollTrigger.min.js
 ```
 
 ## Run locally
