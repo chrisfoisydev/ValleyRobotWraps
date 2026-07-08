@@ -294,7 +294,7 @@ scene.add(scanRing);
    ============================================================ */
 
 // proxies the timeline tweens; the render loop applies them
-const rig = { spin: 0, wave: 0, scanOpacity: 0 };
+const rig = { spin: 0, scanOpacity: 0 };
 
 const tl = gsap.timeline({
   defaults: { ease: 'none' },
@@ -357,15 +357,14 @@ tl.addLabel('hivis')
   .to(hivisMat, { emissiveIntensity: 2.2, duration: 0.5 }, 'hivis+=0.25')
   .to(hivisMat.color, { r: HIVIS_ON.r, g: HIVIS_ON.g, b: HIVIS_ON.b, duration: 0.5 }, 'hivis+=0.25');
 
-// --- chapter 5 → 6: lights back up, full turn + wave ---
+// --- chapter 5 → 6: lights back up, full turn to face front ---
 tl.addLabel('final')
   .to(camPos, { x: 0, y: 1.55, z: 5.0, duration: 1 }, 'final')
   .to(camTgt, { x: 0, y: 1.1, duration: 1 }, 'final')
   .to(ambient, { intensity: 0.55, duration: 0.4 }, 'final')
   .to(keyLight, { intensity: 2.2, duration: 0.4 }, 'final')
   .to(fillLight, { intensity: 1.1, duration: 0.4 }, 'final')
-  .to(rig, { spin: Math.PI * 2 - 0.75 + 0.75, duration: 0.9 }, 'final') // finish a full turn, face front
-  .to(rig, { wave: 1, duration: 0.6 }, 'final+=0.35');
+  .to(rig, { spin: Math.PI * 2 - 0.75 + 0.75, duration: 0.9 }, 'final'); // finish a full turn, face front
 
 /* ============================================================
    Chapter copy fades
@@ -410,14 +409,9 @@ function render() {
     headGrp.rotation.y = Math.sin(t * 0.5) * 0.12;
     headGrp.rotation.x = Math.sin(t * 0.7) * 0.04;
     armL.shoulder.rotation.x = Math.sin(t * 1.1) * 0.03;
+    armR.shoulder.rotation.x = Math.sin(t * 1.1 + 2) * 0.03;
     dust.rotation.y = t * 0.012;
   }
-
-  // scroll-scrubbed wave: right arm raises, forearm oscillates
-  const env = Math.sin(rig.wave * Math.PI); // 0→1→0 envelope across the wave
-  armR.shoulder.rotation.z = -rig.wave * 2.2;
-  armR.elbow.rotation.z = -env * 0.5 + Math.sin(rig.wave * Math.PI * 4) * 0.45 * env;
-  if (rig.wave === 0) armR.shoulder.rotation.x = Math.sin(t * 1.1 + 2) * 0.03;
 
   camera.position.set(camPos.x, camPos.y, camPos.z);
   camera.lookAt(camTgt.x, camTgt.y, camTgt.z);
