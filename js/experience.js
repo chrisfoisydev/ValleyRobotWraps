@@ -93,23 +93,23 @@ scene.add(dust);
    Materials
    ============================================================ */
 
-const BARE = { color: 0xb9c2cf, metalness: 0.85, roughness: 0.32 };
-const bareMat  = new THREE.MeshStandardMaterial(BARE);                 // never wrapped (joints, hands, feet)
-const darkMat  = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.6, roughness: 0.4 });
-const visorMat = new THREE.MeshStandardMaterial({ color: 0x020617, metalness: 0.4, roughness: 0.15 });
-const eyeMat   = new THREE.MeshStandardMaterial({ color: 0x22d3ee, emissive: 0x22d3ee, emissiveIntensity: 1.6 });
+// Optimus styling: white sculpted panels over a black under-suit
+const PANEL = { color: 0xe8eaee, metalness: 0.2, roughness: 0.38 };
+const panelMat = new THREE.MeshStandardMaterial(PANEL);               // white shells never wrapped (helmet, forearms, shins)
+const suitMat  = new THREE.MeshStandardMaterial({ color: 0x14181f, metalness: 0.4, roughness: 0.6 }); // black joints/under-suit
+const faceMat  = new THREE.MeshStandardMaterial({ color: 0x05070a, metalness: 0.3, roughness: 0.08 }); // glossy black faceplate
 
-// wrap targets — start bare, tweened to brand colors on scroll
-const torsoMat = new THREE.MeshStandardMaterial(BARE); // -> brand cyan
-const chestMat = new THREE.MeshStandardMaterial(BARE); // -> brand indigo
-const armMat   = new THREE.MeshStandardMaterial(BARE); // -> brand indigo
-const thighMat = new THREE.MeshStandardMaterial(BARE); // -> brand cyan
+// wrap targets — start factory white, tweened to brand colors on scroll
+const torsoMat    = new THREE.MeshStandardMaterial(PANEL); // chest shell -> brand cyan
+const shoulderMat = new THREE.MeshStandardMaterial(PANEL); // shoulder caps -> brand indigo
+const armMat      = new THREE.MeshStandardMaterial(PANEL); // upper arms -> brand indigo
+const thighMat    = new THREE.MeshStandardMaterial(PANEL); // thighs -> brand cyan
 
 const WRAP = {
-  torso: new THREE.Color(0x06b6d4),
-  chest: new THREE.Color(0x4f46e5),
-  arm:   new THREE.Color(0x4f46e5),
-  thigh: new THREE.Color(0x0891b2),
+  torso:    new THREE.Color(0x06b6d4),
+  shoulder: new THREE.Color(0x4f46e5),
+  arm:      new THREE.Color(0x4f46e5),
+  thigh:    new THREE.Color(0x0891b2),
 };
 
 // hi-vis bands — dark amber until the night-shift chapter lights them up
@@ -180,61 +180,67 @@ const box = (w, h, d, mat) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat
 const ball = (r, mat) => new THREE.Mesh(new THREE.SphereGeometry(r, 20, 16), mat);
 const band = (r, h) => new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 20), hivisMat);
 
-// -- torso group (breathes) --
+// -- torso group (breathes) — Optimus-style tapered chest over black abdomen --
 const torsoGrp = new THREE.Group();
 robot.add(torsoGrp);
 
-const pelvis = box(0.34, 0.17, 0.22, darkMat);
+const chest = box(0.42, 0.32, 0.24, torsoMat);
+chest.position.y = 1.47;
+
+const midriff = box(0.34, 0.16, 0.21, torsoMat);
+midriff.position.y = 1.28;
+
+// dark sternum line splitting the pectoral plates
+const sternum = box(0.06, 0.3, 0.022, suitMat);
+sternum.position.set(0, 1.47, 0.13);
+
+const abdomen = box(0.26, 0.16, 0.18, suitMat);
+abdomen.position.y = 1.14;
+
+const pelvis = box(0.32, 0.15, 0.2, suitMat);
 pelvis.position.y = 1.02;
+const hipCapL = ball(0.07, panelMat); hipCapL.position.set(-0.16, 1.0, 0);
+const hipCapR = ball(0.07, panelMat); hipCapR.position.set(0.16, 1.0, 0);
 
-const torso = box(0.46, 0.5, 0.27, torsoMat);
-torso.position.y = 1.37;
+badgeGroup.position.set(-0.105, 1.5, 0.148);
+nameTag.position.set(0.06, 1.48, 0.146);
+roleTag.position.set(0, 1.585, 0.135);
 
-const chestPlate = box(0.36, 0.24, 0.05, chestMat);
-chestPlate.position.set(0, 1.44, 0.15);
+torsoGrp.add(chest, midriff, sternum, abdomen, pelvis, hipCapL, hipCapR, badgeGroup, nameTag, roleTag);
 
-const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.1, 20), bareMat);
-waist.position.y = 1.14;
-
-badgeGroup.position.set(-0.1, 1.47, 0.185);
-nameTag.position.set(0.055, 1.45, 0.183);
-roleTag.position.set(0, 1.6, 0.155);
-
-torsoGrp.add(pelvis, torso, chestPlate, waist, badgeGroup, nameTag, roleTag);
-
-// -- head group (pivot at neck) --
+// -- head group (pivot at neck): smooth helmet, full glossy faceplate, no eyes --
 const headGrp = new THREE.Group();
 headGrp.position.y = 1.64;
-const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.09, 16), bareMat);
+const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.1, 16), suitMat);
 neck.position.y = 0.03;
-const head = box(0.24, 0.2, 0.22, bareMat);
-head.position.y = 0.17;
-const visor = box(0.19, 0.075, 0.02, visorMat);
-visor.position.set(0, 0.185, 0.112);
-const eyeL = ball(0.016, eyeMat); eyeL.position.set(-0.05, 0.185, 0.124);
-const eyeR = ball(0.016, eyeMat); eyeR.position.set(0.05, 0.185, 0.124);
-headGrp.add(neck, head, visor, eyeL, eyeR);
+const helmet = ball(0.12, panelMat);
+helmet.scale.set(0.95, 1.1, 1.0);
+helmet.position.y = 0.19;
+const facePlate = ball(0.113, faceMat);
+facePlate.scale.set(0.85, 1.0, 0.72);
+facePlate.position.set(0, 0.185, 0.045);
+headGrp.add(neck, helmet, facePlate);
 robot.add(headGrp);
 
 // -- arms (pivot groups at shoulders / elbows) --
 function makeArm(side) { // side: -1 left, +1 right
   const shoulder = new THREE.Group();
   shoulder.position.set(side * 0.3, 1.56, 0);
-  shoulder.add(ball(0.075, bareMat));
+  shoulder.add(ball(0.085, shoulderMat)); // white cap -> wrapped indigo
 
-  const upper = capsule(0.062, 0.24, armMat);
+  const upper = capsule(0.06, 0.22, armMat);
   upper.position.y = -0.17;
   shoulder.add(upper);
 
   const elbow = new THREE.Group();
   elbow.position.y = -0.34;
-  elbow.add(ball(0.055, bareMat));
+  elbow.add(ball(0.05, suitMat));
 
-  const fore = capsule(0.05, 0.22, bareMat);
+  const fore = capsule(0.052, 0.2, panelMat);
   fore.position.y = -0.16;
   const hvBand = band(0.058, 0.07);
   hvBand.position.y = -0.22;
-  const hand = box(0.07, 0.11, 0.05, darkMat);
+  const hand = box(0.06, 0.12, 0.05, suitMat);
   hand.position.y = -0.335;
   elbow.add(fore, hvBand, hand);
 
@@ -252,15 +258,15 @@ function makeLeg(side) {
 
   const thigh = capsule(0.078, 0.28, thighMat);
   thigh.position.y = -0.2;
-  const knee = ball(0.065, bareMat);
+  const knee = ball(0.062, suitMat);
   knee.position.y = -0.4;
-  const shin = capsule(0.058, 0.3, bareMat);
+  const shin = capsule(0.058, 0.3, panelMat);
   shin.position.y = -0.62;
   const hvBand = band(0.066, 0.08);
   hvBand.position.y = -0.7;
-  const ankle = ball(0.052, bareMat);
+  const ankle = ball(0.052, suitMat);
   ankle.position.y = -0.86;
-  const foot = box(0.12, 0.07, 0.25, darkMat);
+  const foot = box(0.12, 0.07, 0.25, suitMat);
   foot.position.set(0, -0.92, 0.045);
   hip.add(thigh, knee, shin, hvBand, ankle, foot);
   robot.add(hip);
@@ -319,8 +325,8 @@ tl.addLabel('wrap')
   .to(rig, { spin: 0.5, duration: 1 }, 'wrap')
   .to(torsoMat.color, { r: WRAP.torso.r, g: WRAP.torso.g, b: WRAP.torso.b, duration: 0.45 }, 'wrap+=0.15')
   .to(torsoMat, { metalness: 0.3, roughness: 0.42, duration: 0.45 }, 'wrap+=0.15')
-  .to(chestMat.color, { r: WRAP.chest.r, g: WRAP.chest.g, b: WRAP.chest.b, duration: 0.4 }, 'wrap+=0.3')
-  .to(chestMat, { metalness: 0.3, roughness: 0.42, duration: 0.4 }, 'wrap+=0.3')
+  .to(shoulderMat.color, { r: WRAP.shoulder.r, g: WRAP.shoulder.g, b: WRAP.shoulder.b, duration: 0.4 }, 'wrap+=0.3')
+  .to(shoulderMat, { metalness: 0.3, roughness: 0.42, duration: 0.4 }, 'wrap+=0.3')
   .to(armMat.color, { r: WRAP.arm.r, g: WRAP.arm.g, b: WRAP.arm.b, duration: 0.35 }, 'wrap+=0.5')
   .to(armMat, { metalness: 0.3, roughness: 0.42, duration: 0.35 }, 'wrap+=0.5')
   .to(thighMat.color, { r: WRAP.thigh.r, g: WRAP.thigh.g, b: WRAP.thigh.b, duration: 0.35 }, 'wrap+=0.62')
